@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NFT Gallery</title>
+  <style>
+    body {
+      background: transparent;
+      margin: 0;
+      padding: 0;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+    .nft {
+      max-width: 300px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .nft img {
+      width: 100%;
+      border-radius: 12px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="gallery" id="nft-gallery">Loading NFTs...</div>
+
+  <script>
+    async function loadNFTs() {
+      try {
+        const res = await fetch('https://nft-scraper3-production.up.railway.app/nfts');
+        const data = await res.json();
+        const container = document.getElementById('nft-gallery');
+        container.innerHTML = data.map(nft => `
+          <div class="nft">
+            <a href="${nft.link}" target="_blank" rel="noopener noreferrer">
+              <img src="${nft.image}" alt="NFT" />
+            </a>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Couldn't load NFTs:", err);
+        document.getElementById('nft-gallery').innerText = 'Failed to load NFTs.';
+      }
+    }
+
+    loadNFTs();
+    setInterval(loadNFTs, 60000); // Refresh every 60 seconds
+  </script>
+</body>
+</html>
